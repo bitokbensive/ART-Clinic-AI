@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# VS Code
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Patient/data files - NEVER upload these
+*.csv
+*.xlsx
+*.xls
+*.parquet
+
+# Secrets
+.env
+*.key
+*.pem
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,87 @@
+{
+    "model_name": "ART Care Interruption Risk Model",
+    "model_version": "1.0.0",
+    "model_type": "Logistic Regression",
+    "model_status": "Frozen for deployment prototype",
+    "intended_use": "Clinical decision support and prioritization of patients for ART care-engagement review.",
+    "clinical_role": "Decision support only. The model does not make autonomous clinical decisions.",
+    "outcome": {
+        "name": "probable_art_care_interruption",
+        "definition": "Absence from the August 2026 active ART line list combined with at least 180 days since the last documented ART visit, excluding patients documented as transferred out or deceased."
+    },
+    "training_data": {
+        "cohort_size": 1341,
+        "events": 289,
+        "non_events": 1052,
+        "event_prevalence": 0.2155
+    },
+    "features": {
+        "numeric": [
+            "age_at_art",
+            "bCD4Count",
+            "art_start_year"
+        ],
+        "categorical": [
+            "Gender",
+            "population_type",
+            "key_population_type",
+            "EnrollmentType",
+            "StartARTRegimen",
+            "StartARTRegimenLine",
+            "bWHOStage"
+        ]
+    },
+    "preprocessing": {
+        "numeric_imputation": "median",
+        "numeric_scaling": "StandardScaler",
+        "categorical_imputation": "most_frequent",
+        "categorical_encoding": "OneHotEncoder",
+        "unknown_categories": "ignored"
+    },
+    "algorithm": {
+        "name": "LogisticRegression",
+        "class_weight": "balanced",
+        "max_iter": 2000,
+        "random_state": 42
+    },
+    "validation": {
+        "method": "5-fold stratified cross-validation",
+        "mean_roc_auc": 0.825,
+        "roc_auc_sd": 0.028,
+        "oof_roc_auc": 0.821,
+        "mean_pr_auc": 0.654,
+        "pr_auc_sd": 0.047,
+        "oof_pr_auc": 0.643,
+        "brier_score": 0.162
+    },
+    "risk_thresholds": {
+        "low": "< 0.40",
+        "moderate": "0.40 to < 0.70",
+        "high": ">= 0.70"
+    },
+    "threshold_status": "Prototype operational thresholds; not clinically validated.",
+    "data_quality_rules": {
+        "key_population_type_160666": "Recoded as Unknown/missing because it was treated as erroneous numeric-like identifier contamination.",
+        "patient_identifiers": "Not required as model predictors."
+    },
+    "limitations": [
+        "Retrospective model development.",
+        "Outcome represents probable ART care interruption rather than confirmed loss to follow-up.",
+        "No temporal or prospective validation has yet been completed.",
+        "Risk thresholds are operational prototype thresholds and are not clinically validated.",
+        "Predicted probabilities should not be interpreted as fully calibrated individual absolute risks.",
+        "Model predictions require clinician review and appropriate clinical context."
+    ],
+    "deployment_requirements": [
+        "Use the frozen model artifact without modifying preprocessing.",
+        "Provide exactly the required feature names.",
+        "Validate incoming patient data before prediction.",
+        "Log model version used for each prediction.",
+        "Restrict access to authorized users.",
+        "Do not expose direct patient identifiers unnecessarily.",
+        "Monitor model performance and data drift.",
+        "Perform temporal/prospective validation before routine clinical deployment."
+    ],
+    "created_at_utc": "2026-09-30T11:29:02.794806+00:00",
+    "model_artifact": "ART_interruption_logistic_model_final.joblib"
+}
